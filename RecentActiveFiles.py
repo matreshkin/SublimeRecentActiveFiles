@@ -2,6 +2,12 @@ import sublime, sublime_plugin
 import os
 
 class RecentActiveFilesEventListener(sublime_plugin.EventListener):
+    def on_post_save(self, view):
+        self.on_activated(view)
+
+    def on_deactivated(self, view):
+        self.on_activated(view)
+
     def on_activated(self, view):
         if view.file_name():
             view.window().run_command("recent_active_files", { "file_name": view.file_name() })
@@ -22,6 +28,7 @@ class RecentActiveFilesCommand(sublime_plugin.WindowCommand):
         return path
 
     def run(self, file_name=None):
+        view = self.window.active_view()
         if file_name:
             self.unshift(file_name)
         else:
@@ -32,8 +39,7 @@ class RecentActiveFilesCommand(sublime_plugin.WindowCommand):
                 if index >= 0:
                     self.window.open_file(items[index][2])
                 else:
-                    if len(self.recent_active_files) > 0:
-                        self.window.open_file(items[0][2])
+                    self.window.focus_view(view)
 
             def on_highlight(index):
                 if index >= 0:
