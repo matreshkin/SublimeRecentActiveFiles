@@ -43,7 +43,8 @@ class RecentActiveFilesCommand(sublime_plugin.WindowCommand):
 
             def on_highlight(index):
                 if index >= 0:
-                    self.window.open_file(items[index][2], sublime.TRANSIENT)
+                    # for 8 - see https://sublimetext.userecho.com/communities/1/topics/2482-open-file-in-current-group-from-api
+                    self.window.open_file(items[index][2], sublime.TRANSIENT|sublime.ENCODED_POSITION|8)
 
-            self.window.show_quick_panel(items, on_done, sublime.MONOSPACE_FONT, -1, on_highlight)
+            self.window.show_quick_panel(items, on_done, sublime.MONOSPACE_FONT, 1, on_highlight)
 
